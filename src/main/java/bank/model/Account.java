@@ -1,6 +1,4 @@
-package com.example.demo.bank.account;
-
-import com.example.demo.bank.BaseEntity;
+package bank.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-public class Account extends BaseEntity {
+public class Account extends _BaseEntity {
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
     @Column(nullable = false)

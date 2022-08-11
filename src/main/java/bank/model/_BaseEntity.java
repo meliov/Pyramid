@@ -1,4 +1,4 @@
-package com.example.demo.bank;
+package bank.model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class _BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -28,7 +28,7 @@ public abstract class BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BaseEntity that = (BaseEntity) o;
+        _BaseEntity that = (_BaseEntity) o;
         return Objects.equals(id, that.id);
     }
 

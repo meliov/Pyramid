@@ -1,6 +1,6 @@
-package com.example.demo.bank.transaction;
+package bank.service;
 
-import com.example.demo.bank.account.Account;
+import bank.model.Transaction;
 
 import java.math.BigDecimal;
 
@@ -12,6 +12,9 @@ public class TransactionContext {
     public static TransactionContext of(Long src, Long dst, BigDecimal amount) {
         return new TransactionContext(src, dst, amount);
     }
+    public static TransactionContext of(Transaction e) {
+        return TransactionContext.of(e.getSrcAccount().getId(), e.getDstAccount().getId(), e.getAmount());
+    }
 
     private TransactionContext(Long src, Long dst, BigDecimal amount) {
         this.amount = amount;
@@ -22,9 +25,6 @@ public class TransactionContext {
     public BigDecimal getAmount() {
         return amount;
     }
-
-
-
     public Long getSrcAccountId (){
         return srcAccountId;
     }

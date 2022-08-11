@@ -1,8 +1,9 @@
-package com.example.demo.bank;
+package demo1.bank;
 
 
 
-import com.example.demo.bank.transaction.TransactionContext;
+import bank.service.BankService;
+import bank.service.TransactionContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ public class BankServiceTest {
 
     @Test
     public void createAccountTest(){
-        var x = bankService.createAccount();
+        bankService.createAccount();
+        bankService.createAccount();
+        bankService.createAccount();
     }
 
     @Test
@@ -32,6 +35,7 @@ public class BankServiceTest {
     }
     @Test
     public void multiTransferTest(){
+        bankService.transfer(TransactionContext.of( 1L, 2L, BigDecimal.valueOf(50)), TransactionContext.of(1L, 3L, BigDecimal.valueOf(50) ));
         bankService.transfer(TransactionContext.of( 1L, 2L, BigDecimal.valueOf(50)), TransactionContext.of(1L, 3L, BigDecimal.valueOf(50) ));
     }
     @Test

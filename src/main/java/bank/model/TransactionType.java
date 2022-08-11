@@ -1,4 +1,4 @@
-package com.example.demo.bank.transaction;
+package bank.model;
 
 public enum TransactionType {
     DEBIT, CREDIT
