@@ -4,6 +4,7 @@ package bank.service;
 import bank.model.TransactionCount;
 import org.springframework.stereotype.Service;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;

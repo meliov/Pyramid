@@ -4,7 +4,9 @@ import bank.model.Account;
 import bank.model.Transaction;
 import bank.model.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -16,9 +18,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Component("bankService")
-class BankServiceImpl implements BankService {
+public class BankServiceImpl implements BankService {
 
-    public static final long BANK_CLEARING_ACCOUNT_ID = 1L;
 
     @PersistenceContext
     private EntityManager em;
@@ -59,7 +60,7 @@ class BankServiceImpl implements BankService {
     @Override
     @Transactional
     public Long transfer(TransactionContext... transactions) {
-        final Long transactionGroupId = transactionGroupIdService.nextVal();
+        Long transactionGroupId = transactionGroupIdService.nextVal();
 
         Stream.of(transactions).forEach(
                 t -> {

@@ -2,21 +2,21 @@ package bank.service;
 
 import bank.model.TransactionReversal;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
+
 
 @Component("reversalBankService")
 public class ReversalProxyImpl implements BankService {
 
-    @PersistenceContext
-    EntityManager em;
+   @PersistenceContext
+   EntityManager em;
 
     @Autowired
     @Qualifier("lockedBankService")
