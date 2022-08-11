@@ -7,6 +7,7 @@ import bank.service.LockingProxyImpl;
 import bank.service.ReversalProxyImpl;
 import bank.service.TransactionContext;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +40,7 @@ public class BankServiceTest {
     }
     @Test
     public void reverseTest(){
-        bankService.reverse(1L);
+        bankService.reverse(7L);
     }
 
 
