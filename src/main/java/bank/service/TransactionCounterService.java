@@ -16,6 +16,14 @@ class TransactionCounterService {
     private EntityManager em;
 
     public Long nextVal() {
-        return em.find(TransactionCount.class, TransactionCount.DEFAULT_ID, LockModeType.PESSIMISTIC_WRITE).incAndGet();
+        Long x;
+        try {
+            x = em.find(TransactionCount.class, TransactionCount.DEFAULT_ID, LockModeType.PESSIMISTIC_WRITE).incAndGet();
+        }catch (Exception e){
+            em.persist(new TransactionCount());
+            x = 1L;
+        }
+        // izvinqvai bai ivan, ne mojahme da go opravim s sql file
+        return x;
     }
 }

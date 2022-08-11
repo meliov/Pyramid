@@ -19,7 +19,7 @@ public class ReversalProxyImpl implements BankService {
    EntityManager em;
 
     @Autowired
-    @Qualifier("lockedBankService")
+    @Qualifier("bankService")
     private BankService bankService;
 
     @Override
@@ -36,12 +36,12 @@ public class ReversalProxyImpl implements BankService {
     @Transactional
     public Long reverse(Long groupId) {
 
-        if (!em.createQuery("select tr from TransactionReversal tr where tr.reversedId = :reversedId", TransactionReversal.class)
+        if (!em.createNamedQuery(TransactionReversal.QUERY_FIND_TRANSACTIONS_REVERSED_ID, TransactionReversal.class)
                 .setParameter("reversedId", groupId).getResultList().isEmpty()) {
             throw new IllegalArgumentException("transaction already reversed!");
         }
 
-        if (!em.createQuery("select tr from TransactionReversal tr where tr.reversalId = :reversalId", TransactionReversal.class)
+        if (!em.createNamedQuery(TransactionReversal.QUERY_FIND_TRANSACTIONS_REVERSAL_ID, TransactionReversal.class)
                 .setParameter("reversalId", groupId).getResultList().isEmpty()) {
             throw new IllegalArgumentException("transaction is a reversal of other transaction");
         }

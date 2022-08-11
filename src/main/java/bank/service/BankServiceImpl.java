@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Component("bankService")
-public class BankServiceImpl implements BankService {
+ class BankServiceImpl implements BankService {
 
 
     @PersistenceContext
@@ -49,7 +49,6 @@ public class BankServiceImpl implements BankService {
         transaction.setGroupTransactionId(groupId);
         transaction.setDateOperation(LocalDateTime.now());
         em.persist(transaction);
-
         if (type == TransactionType.DEBIT) {
             srcAccount.decBalance(amount);
         } else {

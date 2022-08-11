@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 @ContextConfiguration
 public class BankServiceTest {
     @Autowired
-    @Qualifier("reversalBankService")
+    @Qualifier("lockedBankService")
     private BankService bankService;
 
     @Test

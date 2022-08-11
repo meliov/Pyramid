@@ -7,7 +7,7 @@ public class TransactionCount extends _BaseEntity {
 
     public final static Long DEFAULT_ID = 1L;
 
-    private Long nextVal;
+    private Long nextVal = 1L;
 
     public Long incAndGet(){
         return ++nextVal;

@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-//@Table(indexes = {@Index(columnList = "group_transaction_id, operation_type")})
-//@NamedQueries(value = {@NamedQuery(name = Transaction.QUERY_FIND_TRANSACTIONS_FOR_REVERSAL, query = "select t from Transaction t where t.groupTransactionId = :groupTransactionId and t.operationType = :operationType")})
+@Table(indexes = {@Index(columnList = "group_transaction_id, operation_type")})
+@NamedQuery(name = Transaction.QUERY_FIND_TRANSACTIONS_FOR_REVERSAL, query = "select t from Transaction t where t.groupTransactionId = :groupTransactionId and t.operationType = :operationType")
 public class Transaction extends _BaseEntity {
 
     public static final String QUERY_FIND_TRANSACTIONS_FOR_REVERSAL = "QUERY_FIND_TRANSACTIONS_FOR_REVERSAL";
@@ -23,7 +23,7 @@ public class Transaction extends _BaseEntity {
     @Column(nullable = false)
     private LocalDateTime dateOperation;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "operation_type")
     @Enumerated(EnumType.STRING)
     private TransactionType operationType;
 

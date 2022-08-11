@@ -8,13 +8,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 @Component("lockedBankService")
+/**
+ * delegates to reversalBankService which delegates to bankService, chaining 3 of them
+ */
 public class LockingProxyImpl implements BankService {
 
     @Autowired
-    @Qualifier("bankService")
+    @Qualifier("reversalBankService")
     private BankService bankService;
 
-    private ReentrantLock transactionLock = new ReentrantLock();
+    private final ReentrantLock transactionLock = new ReentrantLock();
 
     private <T> T doLock(Supplier<T> s) {
         try {

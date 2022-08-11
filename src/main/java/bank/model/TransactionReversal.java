@@ -5,14 +5,20 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-//@Table(indexes = {@Index(columnList = "reversed_id"), @Index(columnList = "reversal_id")})
-@NamedQueries(value = {@NamedQuery(name = Transaction.QUERY_FIND_TRANSACTIONS_FOR_REVERSAL, query = "select t from Transaction t where t.groupTransactionId = :groupTransactionId and t.operationType = :operationType")})
-public class TransactionReversal extends _BaseEntity {
+@Table(indexes = {@Index(columnList = "reversed_id"), @Index(columnList = "reversal_id")})
+@NamedQueries(value = {
+        @NamedQuery(name =TransactionReversal.QUERY_FIND_TRANSACTIONS_REVERSED_ID, query = "select tr from TransactionReversal tr where tr.reversedId = :reversedId"),
+        @NamedQuery(name = TransactionReversal.QUERY_FIND_TRANSACTIONS_REVERSAL_ID, query = "select tr from TransactionReversal tr where tr.reversalId = :reversalId")
 
-    @Column(unique = true, nullable = false)
+})
+
+public class TransactionReversal extends _BaseEntity {
+    public static final String QUERY_FIND_TRANSACTIONS_REVERSAL_ID = "QUERY_FIND_TRANSACTIONS_REVERSAL_ID";
+    public static final String QUERY_FIND_TRANSACTIONS_REVERSED_ID = "QUERY_FIND_TRANSACTIONS_REVERSED_ID";
+    @Column(unique = true, nullable = false, name = "reversed_id")
     private Long reversedId;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "reversal_id")
     private Long reversalId;
 
     public void setReversedId(Long reversedId) {
