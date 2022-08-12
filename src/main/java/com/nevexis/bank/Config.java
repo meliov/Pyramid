@@ -1,4 +1,4 @@
-package bank;
+package com.nevexis.bank;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

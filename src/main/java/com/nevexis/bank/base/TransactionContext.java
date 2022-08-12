@@ -1,8 +1,8 @@
-package bank.service;
-
-import bank.model.Transaction;
+package com.nevexis.bank.base;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransactionContext {
     private final BigDecimal amount;
@@ -30,6 +30,17 @@ public class TransactionContext {
     }
     public Long getDstAccountId (){
         return dstAccountId;
+    }
+
+
+    private Map<String, String > props = new HashMap<>();
+
+    public String get(Object key) {
+        return props.get(key);
+    }
+
+    public String put(String key, String value) {
+        return props.put(key, value);
     }
 }
 

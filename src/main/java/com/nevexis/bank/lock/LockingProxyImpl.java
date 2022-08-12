@@ -1,5 +1,7 @@
-package bank.service;
+package com.nevexis.bank.lock;
 
+import com.nevexis.bank.base.BankService;
+import com.nevexis.bank.base.TransactionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -11,7 +13,7 @@ import java.util.function.Supplier;
 /**
  * delegates to reversalBankService which delegates to bankService, chaining 3 of them
  */
-public class LockingProxyImpl implements BankService {
+class LockingProxyImpl implements BankService {
 
     @Autowired
     @Qualifier("reversalBankService")
@@ -36,13 +38,11 @@ public class LockingProxyImpl implements BankService {
 
     @Override
     public Long transfer(TransactionContext... transParamObject) {
-        return doLock(() -> {
-            return bankService.transfer(transParamObject);
-        });
+        return doLock(() -> bankService.transfer(transParamObject));
     }
 
     @Override
     public Long reverse(Long groupId) {
-        return bankService.reverse(groupId);
+        return doLock(() -> bankService.reverse(groupId));
     }
 }

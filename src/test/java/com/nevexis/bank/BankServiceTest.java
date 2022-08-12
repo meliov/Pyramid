@@ -1,13 +1,10 @@
-package bank;
+package com.nevexis.bank;
 
 
 
-import bank.service.BankService;
-import bank.service.LockingProxyImpl;
-import bank.service.ReversalProxyImpl;
-import bank.service.TransactionContext;
+import com.nevexis.bank.base.BankService;
+import com.nevexis.bank.base.TransactionContext;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +22,7 @@ public class BankServiceTest {
     @Qualifier("lockedBankService")
     private BankService bankService;
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void createAccountTest(){
         System.out.println();
         bankService.createAccount();

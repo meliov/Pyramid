@@ -1,4 +1,4 @@
-package bank.model;
+package com.nevexis.bank.base;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

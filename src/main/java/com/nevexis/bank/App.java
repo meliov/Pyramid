@@ -1,4 +1,4 @@
-package bank;
+package com.nevexis.bank;
 
 
 import org.springframework.boot.SpringApplication;

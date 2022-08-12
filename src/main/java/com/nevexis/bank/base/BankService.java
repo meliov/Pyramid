@@ -1,6 +1,4 @@
-package bank.service;
-
-import java.math.BigDecimal;
+package com.nevexis.bank.base;
 
 public interface BankService {
     Long createAccount();

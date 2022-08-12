@@ -1,7 +1,6 @@
-package bank.service;
+package com.nevexis.bank.counter;
 
 
-import bank.model.TransactionCount;
 import org.springframework.stereotype.Service;
 
 
@@ -10,13 +9,12 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 
 @Service
-class TransactionCounterService {
+public class TransactionCounterService {
 
     @PersistenceContext
     private EntityManager em;
 
     public Long nextVal() {
-
-       return em.find(TransactionCount.class, TransactionCount.DEFAULT_ID, LockModeType.PESSIMISTIC_WRITE).incAndGet();
+       return em.find(TransactionCounter.class, TransactionCounter.DEFAULT_ID, LockModeType.PESSIMISTIC_WRITE).nextVal();
     }
 }

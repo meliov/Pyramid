@@ -1,12 +1,11 @@
-package bank.service;
+package com.nevexis.bank.service;
 
-import bank.model.Account;
-import bank.model.Transaction;
-import bank.model.TransactionType;
+import com.nevexis.bank.base.*;
+import com.nevexis.bank.counter.TransactionCounterService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -18,14 +17,16 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Component("bankService")
- class BankServiceImpl implements BankService {
+class BankServiceImpl implements BankService {
 
+    @Value("${transactions.for.reversal.limit}")
+    private int transactionsforReversalLimit = 100;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    private TransactionCounterService transactionGroupIdService;
+    private TransactionCounterService transactionCounterService;
 
 
     @Override
@@ -36,38 +37,31 @@ import java.util.stream.Stream;
         return account.getId();
     }
 
-    //! no lock (locked outside)
-    private void createTransaction(Long srcAccountId, Long dstAccountId, BigDecimal amount, TransactionType type, Long groupId) {
-
+    private void createTransaction(Account srcAccount, Account dstAccount, BigDecimal amount, TransactionType type, Long groupId) {
         Transaction transaction = new Transaction();
-
-        Account srcAccount = em.find(Account.class, srcAccountId);
         transaction.setSrcAccount(srcAccount);
-        transaction.setDstAccount(em.find(Account.class, dstAccountId));
+        transaction.setDstAccount(dstAccount);
         transaction.setAmount(amount);
         transaction.setOperationType(type);
         transaction.setGroupTransactionId(groupId);
         transaction.setDateOperation(LocalDateTime.now());
         em.persist(transaction);
-        if (type == TransactionType.DEBIT) {
-            srcAccount.decBalance(amount);
-        } else {
-            srcAccount.incBalance(amount);
-        }
     }
 
     @Override
     @Transactional
     public Long transfer(TransactionContext... transactions) {
-        Long transactionGroupId = transactionGroupIdService.nextVal();
-
+        final Long transactionGroupId = transactionCounterService.nextVal();
         Stream.of(transactions).forEach(
                 t -> {
                     BigDecimal transactionAmount = t.getAmount();
-                    createTransaction(t.getSrcAccountId(), t.getDstAccountId(), transactionAmount, TransactionType.DEBIT, transactionGroupId);
-                    createTransaction(t.getDstAccountId(), t.getSrcAccountId(), transactionAmount, TransactionType.CREDIT, transactionGroupId);
-                }
-        );
+                    Account srcAccount = em.find(Account.class, t.getSrcAccountId());
+                    Account dstAccount = em.find(Account.class, t.getDstAccountId());
+                    createTransaction(srcAccount, dstAccount, transactionAmount, TransactionType.DEBIT, transactionGroupId);
+                    createTransaction(dstAccount, srcAccount, transactionAmount, TransactionType.CREDIT, transactionGroupId);
+                    srcAccount.decBalance(transactionAmount);
+                    dstAccount.incBalance(transactionAmount);
+                });
         return transactionGroupId;
     }
 
@@ -79,6 +73,7 @@ import java.util.stream.Stream;
                         .setParameter("groupTransactionId", groupId)
                         .setParameter("operationType", TransactionType.CREDIT)
                         .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                        .setMaxResults(transactionsforReversalLimit)
                         .getResultList();
 
         return transfer(transactions.stream()
