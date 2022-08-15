@@ -17,4 +17,18 @@ public class TransactionProperty extends _BaseEntity {
     @Column(nullable = false)
     private String propertyValue;
 
+    public TransactionProperty setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
+        return this;
+    }
+
+    public TransactionProperty setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+        return this;
+    }
+
+    public TransactionProperty setPropertyValue(String propertyValue) {
+        this.propertyValue = propertyValue;
+        return this;
+    }
 }

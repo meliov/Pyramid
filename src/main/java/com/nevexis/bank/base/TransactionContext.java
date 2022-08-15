@@ -8,7 +8,11 @@ public class TransactionContext {
     private final BigDecimal amount;
     private final Long srcAccountId;
     private final Long dstAccountId;
+    private Map<String, String > props = new HashMap<>();
 
+    public static TransactionContext of(Long src, Long dst, BigDecimal amount, Map<String, String> props) {
+        return new TransactionContext(src, dst, amount, props);
+    }
     public static TransactionContext of(Long src, Long dst, BigDecimal amount) {
         return new TransactionContext(src, dst, amount);
     }
@@ -22,6 +26,13 @@ public class TransactionContext {
         this.dstAccountId = dst;
     }
 
+    public TransactionContext( Long srcAccountId, Long dstAccountId,BigDecimal amount, Map<String, String> props) {
+        this.amount = amount;
+        this.srcAccountId = srcAccountId;
+        this.dstAccountId = dstAccountId;
+        this.props = props;
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }
@@ -33,7 +44,7 @@ public class TransactionContext {
     }
 
 
-    private Map<String, String > props = new HashMap<>();
+
 
     public String get(Object key) {
         return props.get(key);
@@ -41,6 +52,10 @@ public class TransactionContext {
 
     public String put(String key, String value) {
         return props.put(key, value);
+    }
+
+    public Map<String, String> getProps() {
+        return props;
     }
 }
 

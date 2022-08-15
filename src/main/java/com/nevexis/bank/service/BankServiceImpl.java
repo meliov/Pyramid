@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,8 +21,9 @@ import java.util.stream.Stream;
 class BankServiceImpl implements BankService {
 
     @Value("${transactions.for.reversal.limit}")
-    private int transactionsforReversalLimit = 100;
+    private int transactionsForReversalLimit = 100;
 
+    protected static List<Long> transactionIdsForProperties ;
     @PersistenceContext
     private EntityManager em;
 
@@ -37,7 +39,7 @@ class BankServiceImpl implements BankService {
         return account.getId();
     }
 
-    private void createTransaction(Account srcAccount, Account dstAccount, BigDecimal amount, TransactionType type, Long groupId) {
+    private Long createTransaction(Account srcAccount, Account dstAccount, BigDecimal amount, TransactionType type, Long groupId) {
         Transaction transaction = new Transaction();
         transaction.setSrcAccount(srcAccount);
         transaction.setDstAccount(dstAccount);
@@ -46,22 +48,28 @@ class BankServiceImpl implements BankService {
         transaction.setGroupTransactionId(groupId);
         transaction.setDateOperation(LocalDateTime.now());
         em.persist(transaction);
+        return transaction.getId();
     }
 
     @Override
     @Transactional
     public Long transfer(TransactionContext... transactions) {
+
+        transactionIdsForProperties = new LinkedList<>();
+
         final Long transactionGroupId = transactionCounterService.nextVal();
         Stream.of(transactions).forEach(
                 t -> {
                     BigDecimal transactionAmount = t.getAmount();
                     Account srcAccount = em.find(Account.class, t.getSrcAccountId());
                     Account dstAccount = em.find(Account.class, t.getDstAccountId());
-                    createTransaction(srcAccount, dstAccount, transactionAmount, TransactionType.DEBIT, transactionGroupId);
-                    createTransaction(dstAccount, srcAccount, transactionAmount, TransactionType.CREDIT, transactionGroupId);
+                    transactionIdsForProperties.add(createTransaction(srcAccount, dstAccount, transactionAmount, TransactionType.DEBIT, transactionGroupId));
+                    transactionIdsForProperties.add(createTransaction(dstAccount, srcAccount, transactionAmount, TransactionType.CREDIT, transactionGroupId));
                     srcAccount.decBalance(transactionAmount);
                     dstAccount.incBalance(transactionAmount);
                 });
+        var x = transactionIdsForProperties;
+        System.out.println();
         return transactionGroupId;
     }
 
@@ -73,7 +81,7 @@ class BankServiceImpl implements BankService {
                         .setParameter("groupTransactionId", groupId)
                         .setParameter("operationType", TransactionType.CREDIT)
                         .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                        .setMaxResults(transactionsforReversalLimit)
+                        .setMaxResults(transactionsForReversalLimit)
                         .getResultList();
 
         return transfer(transactions.stream()
