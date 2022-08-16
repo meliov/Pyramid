@@ -1,41 +1,58 @@
 package com.nevexis.pyramid;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Table(indexes = {@Index(columnList = "required_amount")})
+@NamedQuery(name = Tax.QUERY_FIND_TAX_BY_ID, query = "select t from Tax t where t.requiredAmount = :id")
+
 public class Tax extends BaseEntity {
+    public static final String QUERY_FIND_TAX_BY_ID = "QUERY_FIND_TAX_BY_ID";
 
-    private LocalDateTime validDate = LocalDateTime.now().plusYears(1);
-
+    private Integer tax;
+    @Column(name = "required_amount")
+    private BigDecimal requiredAmount;
     @ElementCollection
-    private List<Integer> courses = new ArrayList<>() ;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Integer> levels;
 
+    public Integer getTax() {
+        return tax;
+    }
+
+    public Tax setTax(Integer tax) {
+        this.tax = tax;
+        return this;
+    }
+
+    public BigDecimal getRequiredAmount() {
+        return requiredAmount;
+    }
+
+    public Tax setRequiredAmount(BigDecimal requiredAmount) {
+        this.requiredAmount = requiredAmount;
+        return this;
+    }
+
+    public List<Integer> getLevels() {
+        return levels;
+    }
+
+    public Tax setLevels(List<Integer> levels) {
+        this.levels = levels;
+        return this;
+    }
 
     public Tax() {
     }
 
 
 
-    public LocalDateTime getValidDate() {
-        return validDate;
-    }
 
-    public Tax setValidDate(LocalDateTime validDate) {
-        this.validDate = validDate;
-        return this;
-    }
 
-    public List<Integer> getCourses() {
-        return courses;
-    }
-
-    public Tax setCourses(List<Integer> courses) {
-        this.courses = courses;
-        return this;
-    }
 }

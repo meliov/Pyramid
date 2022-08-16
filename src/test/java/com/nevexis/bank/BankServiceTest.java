@@ -3,6 +3,7 @@ package com.nevexis.bank;
 
 
 import com.nevexis.bank.base.BankService;
+import com.nevexis.bank.base.TransactionContext;
 import com.nevexis.pyramid.Tax;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 
 @RunWith(SpringRunner.class)
@@ -39,13 +42,13 @@ public class BankServiceTest {
     @Transactional
     public void multiTransferTest(){
         //bankService.transfer(TransactionContext.of( 1L, 2L, BigDecimal.valueOf(50)), TransactionContext.of(1L, 3L, BigDecimal.valueOf(50) ));
-//        var x = TransactionContext.of(1L, 2L, BigDecimal.valueOf(50), new HashMap<>());
-//        var y = TransactionContext.of(1L, 2L, BigDecimal.valueOf(50), new HashMap<>());
-//        x.put("Name", "Value");
-//        y.put("Name", "Value");
-//       bankService.transfer(x, y);
-        Tax tax = new Tax();
-        entityManager.persist(tax);
+        var x = TransactionContext.of(1L, 2L, BigDecimal.valueOf(50), new HashMap<>());
+        var y = TransactionContext.of(1L, 2L, BigDecimal.valueOf(50), new HashMap<>());
+        x.put("1", "1");
+        x.put("12", "12");
+        y.put("2", "2");
+       bankService.transfer(x, y);
+
     }
     @Test
     public void reverseTest(){

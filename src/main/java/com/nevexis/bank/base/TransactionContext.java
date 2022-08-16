@@ -8,6 +8,7 @@ public class TransactionContext {
     private final BigDecimal amount;
     private final Long srcAccountId;
     private final Long dstAccountId;
+
     private Map<String, String > props = new HashMap<>();
 
     public static TransactionContext of(Long src, Long dst, BigDecimal amount, Map<String, String> props) {

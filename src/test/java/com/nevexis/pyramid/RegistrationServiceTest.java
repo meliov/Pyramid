@@ -1,5 +1,6 @@
 package com.nevexis.pyramid;
 
+import com.nevexis.bank.base.TransactionContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -23,24 +22,29 @@ public class RegistrationServiceTest {
     @Autowired
     private TaxService taxService;
 
+    @Autowired
+    private RegistrationServiceImpl registrationService;
     @Test
 
     public void taxTest(){
         int x = 10;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1, j = 10; i < 11; i++, j--) {
             Tax tax = new Tax();
-            List<Integer> list = new ArrayList<>();
-            int m = x;
-            for (int j = 0;j < 10; j++) {
-                list.add(m);
-                m--;
-            }
-            x++;
-            tax.setCourses(list);
+            List<Integer> list= List.of(10,9,8,7,6,5,4,3,2,1);
+           tax.setTax(i);
+           tax.setRequiredAmount(BigDecimal.valueOf(j* 10L));
+           tax.setLevels(list);
             taxService.save(tax);
+            System.out.println(tax);
         }
 
         //entityManager.persist(tax);
 
     }
+//    @Test
+//    public void calculateTest(){
+//        List<TransactionContext> transfers = new LinkedList<>();
+//        registrationService.calculate(6L,5L, BigDecimal.valueOf(100), BigDecimal.valueOf(100),0, transfers);
+//        System.out.println(transfers);
+//    }
 }

@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -32,28 +31,26 @@ class PropertyProxyImpl extends BankServiceImpl {
 
     @Override
     @Transactional
-    public Long transfer(TransactionContext... transParamObject) {
-        var grId =  bankService.transfer(transParamObject);
-        // 1 -> 2
+    public Long transfer(TransactionContext... transParamObject) {//6
+        var grId = bankService.transfer(transParamObject);
 
-        for (Map.Entry<String,String> entry : transParamObject[0].getProps().entrySet())
-            System.out.println("Key = " + entry.getKey() +
-                    ", Value = " + entry.getValue());
-        transactionIdsForProperties.forEach(
-                t ->{
-                    TransactionProperty transactionProperty = new TransactionProperty();
-                    transactionProperty.setTransactionId(t);
 
-                    transactionProperty.setPropertyName(transParamObject[0].getProps() + " " + t );
-                    transactionProperty.setPropertyValue("Value" + " " + t );
-                    em.persist(transactionProperty);
-                    transactionProperty.setPropertyName("Name" + " " + t );
-
-                }
-        );
+//        transactionIdsForProperties.forEach(
+//                t ->{
+//                    TransactionProperty transactionProperty = new TransactionProperty();
+//                    transactionProperty.setTransactionId(t);
+//
+//                    transactionProperty.setPropertyName(transParamObject[0].getProps() + " " + t );
+//                    transactionProperty.setPropertyValue("Value" + " " + t );
+//                    em.persist(transactionProperty);
+//                    transactionProperty.setPropertyName("Name" + " " + t );
+//
+//                }
+//        );
         return grId;
 
     }
+
     @Override
     public Long reverse(Long groupId) {
         return bankService.reverse(groupId);

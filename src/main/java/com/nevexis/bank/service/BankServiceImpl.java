@@ -58,7 +58,9 @@ class BankServiceImpl implements BankService {
         transactionIdsForProperties = new LinkedList<>();
 
         final Long transactionGroupId = transactionCounterService.nextVal();
-        Stream.of(transactions).forEach(
+        Stream.of(transactions).
+                filter(transactionContext -> transactionContext.getAmount().compareTo(BigDecimal.ZERO) > 0).
+                forEach(
                 t -> {
                     BigDecimal transactionAmount = t.getAmount();
                     Account srcAccount = em.find(Account.class, t.getSrcAccountId());
