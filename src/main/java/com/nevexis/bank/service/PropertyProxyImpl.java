@@ -33,7 +33,6 @@ class PropertyProxyImpl extends BankServiceImpl {
     @Transactional
     public Long transfer(TransactionContext... transParamObject) {//6
         var grId = bankService.transfer(transParamObject);
-        List<TransactionProperty> transes = new LinkedList<>();
         int x = 0;
         for (TransactionContext transactionContext : transParamObject) {
             for (int j = x; j < transactionIdsForProperties.size(); j++, x++) {
@@ -44,7 +43,6 @@ class PropertyProxyImpl extends BankServiceImpl {
                     transactionProperty.setPropertyName(k);
                     transactionProperty.setPropertyValue(v);
                     em.persist(transactionProperty);
-                    transes.add(transactionProperty);
                 });
                 if (x % 2 != 0) {
                     x++;
@@ -52,22 +50,7 @@ class PropertyProxyImpl extends BankServiceImpl {
                 }
             }
         }
-        System.out.println(transes);
-
-//        transactionIdsForProperties.forEach(
-//                t ->{
-//                    TransactionProperty transactionProperty = new TransactionProperty();
-//                    transactionProperty.setTransactionId(t);
-//
-//                    transactionProperty.setPropertyName(transParamObject[0].getProps() + " " + t );
-//                    transactionProperty.setPropertyValue("Value" + " " + t );
-//                    em.persist(transactionProperty);
-//                    transactionProperty.setPropertyName("Name" + " " + t );
-//
-//                }
-//        );
         return grId;
-
     }
 
     @Override
