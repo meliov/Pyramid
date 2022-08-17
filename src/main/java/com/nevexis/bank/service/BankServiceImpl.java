@@ -39,7 +39,7 @@ class BankServiceImpl implements BankService {
         return account.getId();
     }
 
-    private Long createTransaction(Account srcAccount, Account dstAccount, BigDecimal amount, TransactionType type, Long groupId) {
+    private synchronized Long createTransaction(Account srcAccount, Account dstAccount, BigDecimal amount, TransactionType type, Long groupId) {
         Transaction transaction = new Transaction();
         transaction.setSrcAccount(srcAccount);
         transaction.setDstAccount(dstAccount);

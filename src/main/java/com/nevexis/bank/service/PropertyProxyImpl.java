@@ -33,7 +33,26 @@ class PropertyProxyImpl extends BankServiceImpl {
     @Transactional
     public Long transfer(TransactionContext... transParamObject) {//6
         var grId = bankService.transfer(transParamObject);
-
+        List<TransactionProperty> transes = new LinkedList<>();
+        int x = 0;
+        for (TransactionContext transactionContext : transParamObject) {
+            for (int j = x; j < transactionIdsForProperties.size(); j++, x++) {
+                int finalJ = j;
+                transactionContext.getProps().forEach((k, v) -> {
+                    TransactionProperty transactionProperty = new TransactionProperty();
+                    transactionProperty.setTransactionId(transactionIdsForProperties.get(finalJ));
+                    transactionProperty.setPropertyName(k);
+                    transactionProperty.setPropertyValue(v);
+                    em.persist(transactionProperty);
+                    transes.add(transactionProperty);
+                });
+                if (x % 2 != 0) {
+                    x++;
+                    break;
+                }
+            }
+        }
+        System.out.println(transes);
 
 //        transactionIdsForProperties.forEach(
 //                t ->{

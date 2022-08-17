@@ -39,7 +39,6 @@ public class BankServiceTest {
     }
 
     @Test
-    @Transactional
     public void multiTransferTest(){
         //bankService.transfer(TransactionContext.of( 1L, 2L, BigDecimal.valueOf(50)), TransactionContext.of(1L, 3L, BigDecimal.valueOf(50) ));
         var x = TransactionContext.of(1L, 2L, BigDecimal.valueOf(50), new HashMap<>());
