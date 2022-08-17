@@ -1,6 +1,5 @@
 package com.nevexis.pyramid;
 
-import com.nevexis.bank.base.TransactionContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class RegistrationServiceTest {
     private RegistrationServiceImpl registrationService;
     @Test
 
-    public void taxTest(){
+    public void populateTaxesTest(){
         int x = 10;
         for (int i = 1, j = 10; i < 11; i++, j--) {
             Tax tax = new Tax();
@@ -41,10 +40,8 @@ public class RegistrationServiceTest {
         //entityManager.persist(tax);
 
     }
-//    @Test
-//    public void calculateTest(){
-//        List<TransactionContext> transfers = new LinkedList<>();
-//        registrationService.calculate(6L,5L, BigDecimal.valueOf(100), BigDecimal.valueOf(100),0, transfers);
-//        System.out.println(transfers);
-//    }
+    @Test
+    public void payTaxTest(){
+        registrationService.payTax(6L,1L);
+    }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(indexes = {@Index(columnList = "required_amount")})
-@NamedQuery(name = Tax.QUERY_FIND_TAX_BY_ID, query = "select t from Tax t where t.requiredAmount = :id")
+@NamedQuery(name = Tax.QUERY_FIND_TAX_BY_ID, query = "select t from Tax t where t.id = :id")
 
 public class Tax extends BaseEntity {
     public static final String QUERY_FIND_TAX_BY_ID = "QUERY_FIND_TAX_BY_ID";
@@ -47,12 +47,5 @@ public class Tax extends BaseEntity {
         this.levels = levels;
         return this;
     }
-
-    public Tax() {
-    }
-
-
-
-
 
 }

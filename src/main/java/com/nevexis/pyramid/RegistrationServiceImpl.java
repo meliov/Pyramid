@@ -11,11 +11,16 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
+    public static final long COMPANY_ACCOUNT_ID = 2L;
+    public static final long BANK_ACCOUNT_ID = 1L;
+    public static final BigDecimal PERCENT_CONSTANT = new BigDecimal("0.01");
+    public static final int DEFAULT_REGISTRATION_LEVEL = 0;
+    public static final int DEFAULT_FIRM_PERCENT = 100;
     @PersistenceContext
     private EntityManager em;
     @Autowired
@@ -28,7 +33,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         Person person = Person.of(1L, 1L);
         em.persist(person);
         return person;
-
     }
 
     @Override
@@ -36,36 +40,51 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void payTax(Long personId, Long taxId) {
         Tax tax = em.createNamedQuery(Tax.QUERY_FIND_TAX_BY_ID, Tax.class)
                 .setParameter("id", taxId)
-                .getSingleResult();
-        if (tax == null) {
-            throw new RuntimeException("Tax does not exist..");
-        }
+                        .getResultStream()
+                                .findFirst().orElseThrow(() -> {
+                    throw new RuntimeException("Tax does not exist..");
+                });
+
+
         Person person = em.find(Person.class, personId);
         person.setTaxId(taxId);
         person.setTaxExpirationDate(LocalDateTime.now().plusYears(1));
-        List<TransactionContext> transfers =  calculate(personId,person.getParentId(), tax.getRequiredAmount(), tax.getRequiredAmount(),0, new LinkedList<>());
-        bankService.transfer(transfers.toArray(TransactionContext[]::new));
+
+        var tr = calculate(person, tax.getRequiredAmount());
+        tr.add(TransactionContext.of(BANK_ACCOUNT_ID,person.getAccountId(),tax.getRequiredAmount()));
+        System.out.println();
+        bankService.transfer(tr.toArray(TransactionContext[]::new));
+
     }
 
-    public List<TransactionContext> calculate(Long srcAccount, Long dstAccount, BigDecimal sum, BigDecimal firmSum, Integer level, List<TransactionContext> transfers) {
-        if (dstAccount == 1L) {
-            transfers.add(TransactionContext.of(srcAccount, dstAccount, firmSum));
-            return transfers;
+    private List<TransactionContext> calculate(Person person, BigDecimal sum) {
+        return getCalculateContextsRecursively(findPersonParent(person), new LinkedList<>(), DEFAULT_FIRM_PERCENT, DEFAULT_REGISTRATION_LEVEL)
+                .parallelStream()
+                .map(t -> TransactionContext.of(person.getAccountId(), t.getAccountId(), calculateCurrentSum(sum, t).setScale(2)))
+                .collect(Collectors.toList());
+    }
+
+    private BigDecimal calculateCurrentSum(BigDecimal sum, CalculateContext t) {
+        return sum.multiply(BigDecimal.valueOf(t.getPercentage()).multiply(PERCENT_CONSTANT));
+    }
+
+    private List<CalculateContext> getCalculateContextsRecursively(Person parent, List<CalculateContext> calculateContexts, Integer firmPercent, Integer level) {
+        if (parent.getId() == COMPANY_ACCOUNT_ID) {
+            calculateContexts.add(CalculateContext.of(parent.getAccountId(), firmPercent));
+            return calculateContexts;
         }
-        Person parent = em.find(Person.class, dstAccount);
-        Tax tax = em.find(Tax.class, parent.getTaxId());
-        var bonus = calculateCurrentBonus(sum, level, tax);
-        firmSum = firmSum.subtract(bonus);
-        transfers.add(TransactionContext.of(srcAccount, parent.getId(), bonus));
-
-        return calculate(srcAccount, parent.getParentId(), sum, firmSum, ++level, transfers);
-
-
+        calculateContexts.add(CalculateContext.of(parent.getAccountId(), getCurrentPercent(parent, level)));
+        return getCalculateContextsRecursively(findPersonParent(parent), calculateContexts, firmPercent - getCurrentPercent(parent, level), ++level);
     }
 
-    private BigDecimal calculateCurrentBonus(BigDecimal sum, Integer level, Tax tax) {
-        return sum.multiply(BigDecimal.valueOf(tax.getLevels().get(level) * 0.01));
+    private Integer getCurrentPercent(Person parent, Integer level) {
+        return em.find(Tax.class, parent.getTaxId()).getLevels().get(level);
     }
+
+    private Person findPersonParent(Person person) {
+        return em.find(Person.class, person.getParentId());
+    }
+
 
     //calculate method
 }
