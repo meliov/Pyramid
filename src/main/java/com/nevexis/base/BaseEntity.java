@@ -1,5 +1,4 @@
-package com.nevexis.pyramid;
-
+package com.nevexis.base;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +10,7 @@ import java.util.Objects;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     public Long getId() {

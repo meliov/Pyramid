@@ -1,12 +1,14 @@
 package com.nevexis.bank.base;
 
+import com.nevexis.base.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-public class Account extends _BaseEntity {
+public class Account extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
     @Column(nullable = false)

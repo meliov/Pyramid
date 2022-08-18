@@ -1,5 +1,6 @@
 package com.nevexis.pyramid;
 
+import com.nevexis.base.BaseEntity;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 

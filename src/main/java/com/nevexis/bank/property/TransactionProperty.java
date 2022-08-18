@@ -1,12 +1,11 @@
 package com.nevexis.bank.property;
 
-import com.nevexis.bank.base._BaseEntity;
-import com.nevexis.bank.reversal.TransactionReversal;
+import com.nevexis.base.BaseEntity;
 
 import javax.persistence.*;
 
 @Entity
-public class TransactionProperty extends _BaseEntity {
+public class TransactionProperty extends BaseEntity {
 
     @Column(nullable = false)
     private Long transactionId = 0l;

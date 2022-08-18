@@ -1,5 +1,7 @@
 package com.nevexis.pyramid;
 
+import com.nevexis.base.BaseEntity;
+
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 

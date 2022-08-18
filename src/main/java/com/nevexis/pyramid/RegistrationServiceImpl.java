@@ -85,6 +85,5 @@ public class RegistrationServiceImpl implements RegistrationService {
         return em.find(Person.class, person.getParentId());
     }
 
-
-    //calculate method
+    
 }

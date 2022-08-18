@@ -1,6 +1,6 @@
 package com.nevexis.bank.reversal;
 
-import com.nevexis.bank.base._BaseEntity;
+import com.nevexis.base.BaseEntity;
 
 import javax.persistence.*;
 
@@ -11,7 +11,7 @@ import javax.persistence.*;
         @NamedQuery(name = TransactionReversal.QUERY_FIND_TRANSACTIONS_REVERSAL_ID, query = "select tr from TransactionReversal tr where tr.reversalId = :reversalId")
 })
 
-public class TransactionReversal extends _BaseEntity {
+public class TransactionReversal extends BaseEntity {
     public static final String QUERY_FIND_TRANSACTIONS_REVERSAL_ID = "QUERY_FIND_TRANSACTIONS_REVERSAL_ID";
     public static final String QUERY_FIND_TRANSACTIONS_REVERSED_ID = "QUERY_FIND_TRANSACTIONS_REVERSED_ID";
     @Column(unique = true, nullable = false, name = "reversed_id")

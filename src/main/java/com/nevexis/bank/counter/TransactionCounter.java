@@ -1,11 +1,11 @@
 package com.nevexis.bank.counter;
 
-import com.nevexis.bank.base._BaseEntity;
+import com.nevexis.base.BaseEntity;
 
 import javax.persistence.Entity;
 
 @Entity
-public class TransactionCounter extends _BaseEntity {
+public class TransactionCounter extends BaseEntity {
 
     public final static Long DEFAULT_ID = 1L;
 
